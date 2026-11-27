@@ -147,7 +147,8 @@ export function Experience() {
         const scale = 1 - Math.min(Math.abs(rel), 3) * 0.06;
         el.style.transform = `translate(${x}px, ${y}px) translate(-100%, -50%) scale(${scale})`;
         el.style.opacity = String(opacity);
-        el.style.filter = Math.abs(rel) > 1.5 ? `blur(${Math.min(2, Math.abs(rel) - 1.5)}px)` : "none";
+        el.style.filter =
+          Math.abs(rel) > 1.5 ? `blur(${Math.min(2, Math.abs(rel) - 1.5)}px)` : "none";
       });
 
       ticksRef.current?.setAttribute("transform", `rotate(${p * g.step} ${g.cx} ${g.cy})`);
@@ -203,168 +204,213 @@ export function Experience() {
       <div className="mx-auto max-w-6xl px-6 pt-28">
         <SectionTitle light="BUSINESS" bold="JOURNEY" eyebrow="" />
       </div>
-      <div ref={wrapRef} className="relative" style={{ height: `${100 + (roles.length - 1) * 60}vh` }}>
+      <div
+        ref={wrapRef}
+        className="relative"
+        style={{ height: `${100 + (roles.length - 1) * 60}vh` }}
+      >
         <div className="sticky top-0 h-screen overflow-hidden">
-          <div className="mx-auto flex h-full max-w-6xl flex-col-reverse px-6 md:grid md:grid-cols-2 md:items-center md:gap-8">
-            {/* Details of the year on the marker */}
-            <div className="flex-1 pb-8 md:flex-none md:pb-0">
-              <div
-                key={active}
-                className="experience-zoom"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="grid size-12 place-items-center rounded-full bg-highlight text-highlight-foreground md:size-14">
-                    <CurrentIcon className="size-6" />
-                  </span>
-                  <span className="text-3xl font-semibold tabular-nums text-highlight md:text-4xl">
-                    {yearOf(current.date)}
-                  </span>
-                </div>
-                <p className="mt-5 text-sm font-medium uppercase tracking-[0.25em] text-highlight md:text-base">
-                  {current.company}
-                </p>
-                <h3 className="text-display mt-3 text-4xl md:text-6xl">{current.role}</h3>
-                <p className="mt-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  {current.date}
-                </p>
-                <ul className="mt-5 space-y-2.5 md:mt-6 md:space-y-3">
-                  {current.points.map((pt) => (
-                    <li key={pt} className="flex gap-3 text-sm leading-relaxed text-muted-foreground md:text-base">
-                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-highlight" />
-                      {pt}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <p className="mt-6 text-sm tabular-nums text-muted-foreground md:mt-8">
-                {pad(active + 1)} / {pad(roles.length)}
-              </p>
+          <div className="mx-auto flex h-full max-w-6xl flex-col px-6">
+            {/* Heading pinned at the top of the panel for the whole scroll */}
+            <div className="shrink-0 pt-5 md:pt-8">
+              <SectionTitle
+                light="BUSINESS"
+                bold="JOURNEY"
+                eyebrow=""
+                sizeClass="text-3xl md:text-5xl"
+                wrapClass="mb-0"
+              />
             </div>
 
-            {/* Dial */}
-            <div ref={dialRef} className="relative h-[38%] shrink-0 md:h-full">
-              {geo ? (
-                <svg
-                  className="pointer-events-none absolute inset-0 overflow-visible"
-                  width={geo.w}
-                  height={geo.h}
-                  aria-hidden="true"
-                >
-                  <defs>
-                    <linearGradient id="xp-glow" gradientUnits="userSpaceOnUse" x1="0" y1={ay1} x2="0" y2={ay2}>
-                      <stop offset="0" style={{ stopColor: "var(--highlight)", stopOpacity: 0 }} />
-                      <stop
-                        offset={String((geo.cy - ay1) / (ay2 - ay1))}
-                        style={{ stopColor: "var(--highlight)", stopOpacity: 1 }}
-                      />
-                      <stop offset="1" style={{ stopColor: "var(--highlight)", stopOpacity: 0 }} />
-                    </linearGradient>
-                    <linearGradient id="xp-tick-fade" gradientUnits="userSpaceOnUse" x1={geo.cx} y1="0" x2={geo.cx + geo.r} y2="0">
-                      <stop offset="0" style={{ stopColor: "white", stopOpacity: 0 }} />
-                      <stop offset="0.55" style={{ stopColor: "white", stopOpacity: 0.35 }} />
-                      <stop offset="1" style={{ stopColor: "white", stopOpacity: 1 }} />
-                    </linearGradient>
-                    <mask id="xp-tick-mask">
-                      <rect x={geo.cx - geo.r - 40} y={geo.cy - geo.r - 40} width={geo.r * 2 + 80} height={geo.r * 2 + 80} fill="url(#xp-tick-fade)" />
-                    </mask>
-                  </defs>
-
-                  <g mask="url(#xp-tick-mask)">
-                    <g ref={ticksRef} className="text-muted-foreground">
-                      {Array.from({ length: TICKS }, (_, i) => {
-                        const t = (i / TICKS) * Math.PI * 2;
-                        const major = i % 5 === 0;
-                        const r1 = geo.r - (major ? 34 : 26);
-                        const r2 = geo.r - 10;
-                        return (
-                          <line
-                            key={i}
-                            x1={geo.cx + r1 * Math.cos(t)}
-                            y1={geo.cy - r1 * Math.sin(t)}
-                            x2={geo.cx + r2 * Math.cos(t)}
-                            y2={geo.cy - r2 * Math.sin(t)}
-                            stroke="currentColor"
-                            strokeOpacity={major ? 0.75 : 0.4}
-                            strokeWidth={major ? 2.5 : 2}
-                            strokeLinecap="round"
-                          />
-                        );
-                      })}
-                    </g>
-                  </g>
-
-                  <path
-                    d={`M ${ax1} ${ay1} A ${arcR} ${arcR} 0 0 1 ${ax2} ${ay2}`}
-                    fill="none"
-                    stroke="url(#xp-glow)"
-                    strokeWidth="2.5"
-                    style={{ filter: "drop-shadow(0 0 6px var(--highlight))" }}
-                  />
-                  <line
-                    x1={geo.cx + geo.rp}
-                    y1={geo.cy}
-                    x2={geo.cx + arcR}
-                    y2={geo.cy}
-                    stroke="var(--highlight)"
-                    strokeWidth="2"
-                    style={{ filter: "drop-shadow(0 0 4px var(--highlight))" }}
-                  />
-                  <circle
-                    cx={geo.cx + geo.r - 20}
-                    cy={geo.cy}
-                    r="11"
-                    fill="var(--background)"
-                    stroke="var(--highlight)"
-                    strokeWidth="3"
-                    style={{ filter: "drop-shadow(0 0 8px var(--highlight))" }}
-                  />
-                  <circle cx={geo.cx + geo.r - 20} cy={geo.cy} r="4.5" fill="var(--foreground)" />
-                </svg>
-              ) : null}
-
-              {roles.map((r, i) => {
-                const Icon = r.icon;
-                const isActive = i === active;
-                return (
-                  <div
-                    key={r.company}
-                    ref={(el) => {
-                      itemRefs.current[i] = el;
-                    }}
-                    className="absolute top-0 left-0 will-change-transform"
-                    style={{ transformOrigin: "100% 50%", opacity: 0 }}
-                  >
-                    <div
-                      data-active={isActive}
-                      className="flex items-center gap-3 rounded-full border border-border bg-card/70 py-2 pr-6 pl-2 backdrop-blur-sm transition-[border-color,box-shadow,background-color] duration-500 data-[active=true]:border-highlight data-[active=true]:bg-card data-[active=true]:shadow-[0_0_40px_-8px_var(--highlight)] md:gap-4 md:pr-8"
-                    >
-                      <span
-                        className={`grid size-10 shrink-0 place-items-center rounded-full transition-colors duration-500 md:size-14 ${
-                          isActive ? "bg-highlight text-highlight-foreground" : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        <Icon className="size-4 md:size-6" />
-                      </span>
-                      <span className="leading-tight">
-                        <span
-                          className={`block text-sm font-semibold tabular-nums transition-colors duration-500 md:text-lg ${
-                            isActive ? "text-highlight" : "text-muted-foreground"
-                          }`}
-                        >
-                          {yearOf(r.date)}
-                        </span>
-                        <span
-                          className={`block max-w-[9rem] truncate text-xs transition-colors duration-500 md:max-w-[13rem] md:text-base ${
-                            isActive ? "text-foreground" : "text-muted-foreground"
-                          }`}
-                        >
-                          {r.company}
-                        </span>
-                      </span>
-                    </div>
+            <div className="flex min-h-0 flex-1 flex-col-reverse md:grid md:grid-cols-2 md:items-center md:gap-8">
+              {/* Details of the year on the marker */}
+              <div className="flex-1 pb-8 md:flex-none md:pb-0">
+                <div key={active} className="experience-zoom">
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-12 place-items-center rounded-full bg-highlight text-highlight-foreground md:size-14">
+                      <CurrentIcon className="size-6" />
+                    </span>
+                    <span className="text-3xl font-semibold tabular-nums text-highlight md:text-4xl">
+                      {yearOf(current.date)}
+                    </span>
                   </div>
-                );
-              })}
+                  <p className="mt-5 text-sm font-medium uppercase tracking-[0.25em] text-highlight md:text-base">
+                    {current.company}
+                  </p>
+                  <h3 className="text-display mt-3 text-4xl md:text-6xl">{current.role}</h3>
+                  <p className="mt-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    {current.date}
+                  </p>
+                  <ul className="mt-5 space-y-2.5 md:mt-6 md:space-y-3">
+                    {current.points.map((pt) => (
+                      <li
+                        key={pt}
+                        className="flex gap-3 text-sm leading-relaxed text-muted-foreground md:text-base"
+                      >
+                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-highlight" />
+                        {pt}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <p className="mt-6 text-sm tabular-nums text-muted-foreground md:mt-8">
+                  {pad(active + 1)} / {pad(roles.length)}
+                </p>
+              </div>
+
+              {/* Dial */}
+              <div ref={dialRef} className="relative h-[38%] shrink-0 md:h-full">
+                {geo ? (
+                  <svg
+                    className="pointer-events-none absolute inset-0 overflow-visible"
+                    width={geo.w}
+                    height={geo.h}
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="xp-glow"
+                        gradientUnits="userSpaceOnUse"
+                        x1="0"
+                        y1={ay1}
+                        x2="0"
+                        y2={ay2}
+                      >
+                        <stop
+                          offset="0"
+                          style={{ stopColor: "var(--highlight)", stopOpacity: 0 }}
+                        />
+                        <stop
+                          offset={String((geo.cy - ay1) / (ay2 - ay1))}
+                          style={{ stopColor: "var(--highlight)", stopOpacity: 1 }}
+                        />
+                        <stop
+                          offset="1"
+                          style={{ stopColor: "var(--highlight)", stopOpacity: 0 }}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="xp-tick-fade"
+                        gradientUnits="userSpaceOnUse"
+                        x1={geo.cx}
+                        y1="0"
+                        x2={geo.cx + geo.r}
+                        y2="0"
+                      >
+                        <stop offset="0" style={{ stopColor: "white", stopOpacity: 0 }} />
+                        <stop offset="0.55" style={{ stopColor: "white", stopOpacity: 0.35 }} />
+                        <stop offset="1" style={{ stopColor: "white", stopOpacity: 1 }} />
+                      </linearGradient>
+                      <mask id="xp-tick-mask">
+                        <rect
+                          x={geo.cx - geo.r - 40}
+                          y={geo.cy - geo.r - 40}
+                          width={geo.r * 2 + 80}
+                          height={geo.r * 2 + 80}
+                          fill="url(#xp-tick-fade)"
+                        />
+                      </mask>
+                    </defs>
+
+                    <g mask="url(#xp-tick-mask)">
+                      <g ref={ticksRef} className="text-muted-foreground">
+                        {Array.from({ length: TICKS }, (_, i) => {
+                          const t = (i / TICKS) * Math.PI * 2;
+                          const major = i % 5 === 0;
+                          const r1 = geo.r - (major ? 34 : 26);
+                          const r2 = geo.r - 10;
+                          return (
+                            <line
+                              key={i}
+                              x1={geo.cx + r1 * Math.cos(t)}
+                              y1={geo.cy - r1 * Math.sin(t)}
+                              x2={geo.cx + r2 * Math.cos(t)}
+                              y2={geo.cy - r2 * Math.sin(t)}
+                              stroke="currentColor"
+                              strokeOpacity={major ? 0.75 : 0.4}
+                              strokeWidth={major ? 2.5 : 2}
+                              strokeLinecap="round"
+                            />
+                          );
+                        })}
+                      </g>
+                    </g>
+
+                    <path
+                      d={`M ${ax1} ${ay1} A ${arcR} ${arcR} 0 0 1 ${ax2} ${ay2}`}
+                      fill="none"
+                      stroke="url(#xp-glow)"
+                      strokeWidth="2.5"
+                      style={{ filter: "drop-shadow(0 0 6px var(--highlight))" }}
+                    />
+                    <line
+                      x1={geo.cx + geo.rp}
+                      y1={geo.cy}
+                      x2={geo.cx + arcR}
+                      y2={geo.cy}
+                      stroke="var(--highlight)"
+                      strokeWidth="2"
+                      style={{ filter: "drop-shadow(0 0 4px var(--highlight))" }}
+                    />
+                    <circle
+                      cx={geo.cx + geo.r - 20}
+                      cy={geo.cy}
+                      r="11"
+                      fill="var(--background)"
+                      stroke="var(--highlight)"
+                      strokeWidth="3"
+                      style={{ filter: "drop-shadow(0 0 8px var(--highlight))" }}
+                    />
+                    <circle cx={geo.cx + geo.r - 20} cy={geo.cy} r="4.5" fill="var(--foreground)" />
+                  </svg>
+                ) : null}
+
+                {roles.map((r, i) => {
+                  const Icon = r.icon;
+                  const isActive = i === active;
+                  return (
+                    <div
+                      key={r.company}
+                      ref={(el) => {
+                        itemRefs.current[i] = el;
+                      }}
+                      className="absolute top-0 left-0 will-change-transform"
+                      style={{ transformOrigin: "100% 50%", opacity: 0 }}
+                    >
+                      <div
+                        data-active={isActive}
+                        className="flex items-center gap-3 rounded-full border border-border bg-card/70 py-2 pr-6 pl-2 backdrop-blur-sm transition-[border-color,box-shadow,background-color] duration-500 data-[active=true]:border-highlight data-[active=true]:bg-card data-[active=true]:shadow-[0_0_40px_-8px_var(--highlight)] md:gap-4 md:pr-8"
+                      >
+                        <span
+                          className={`grid size-10 shrink-0 place-items-center rounded-full transition-colors duration-500 md:size-14 ${
+                            isActive
+                              ? "bg-highlight text-highlight-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          <Icon className="size-4 md:size-6" />
+                        </span>
+                        <span className="leading-tight">
+                          <span
+                            className={`block text-sm font-semibold tabular-nums transition-colors duration-500 md:text-lg ${
+                              isActive ? "text-highlight" : "text-muted-foreground"
+                            }`}
+                          >
+                            {yearOf(r.date)}
+                          </span>
+                          <span
+                            className={`block max-w-[9rem] truncate text-xs transition-colors duration-500 md:max-w-[13rem] md:text-base ${
+                              isActive ? "text-foreground" : "text-muted-foreground"
+                            }`}
+                          >
+                            {r.company}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

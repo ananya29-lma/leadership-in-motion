@@ -66,11 +66,7 @@ function useHeadingReveal() {
 
 function splitLetters(text: string, offset: number) {
   return Array.from(text).map((ch, i) => (
-    <span
-      key={i}
-      className="heading-letter"
-      data-index={offset + i}
-    >
+    <span key={i} className="heading-letter" data-index={offset + i}>
       {ch === " " ? "\u00A0" : ch}
     </span>
   ));
@@ -81,16 +77,20 @@ export function SectionTitle({
   bold,
   eyebrow,
   lightClass = "text-muted-foreground/50",
+  sizeClass = "text-5xl md:text-7xl",
+  wrapClass = "mb-14",
 }: {
   light: string;
   bold: string;
   eyebrow?: string;
   lightClass?: string;
+  sizeClass?: string;
+  wrapClass?: string;
 }) {
   const { ref, cls } = useHeadingReveal();
   return (
-    <div className="mb-14">
-      <h2 ref={ref} className={`text-display text-5xl md:text-7xl ${cls}`}>
+    <div className={wrapClass}>
+      <h2 ref={ref} className={`text-display ${sizeClass} ${cls}`}>
         <span className={lightClass}>{splitLetters(light, 0)}&nbsp;</span>
         <span className="text-foreground">{splitLetters(bold, light.length)}</span>
       </h2>
@@ -142,7 +142,7 @@ const awards = [
 
 // Deterministic layout (integer hash, no randomness — keeps SSR and browser in sync)
 const hash = (i: number, salt: number) =>
-  ((Math.imul(i + 1, 2654435761) ^ Math.imul(salt + 7, 40503)) >>> 0) % 1000 / 1000;
+  (((Math.imul(i + 1, 2654435761) ^ Math.imul(salt + 7, 40503)) >>> 0) % 1000) / 1000;
 
 // Narrow shafts fanning out from the corner, like light through a gap
 const ventureRays = [
@@ -303,11 +303,17 @@ export function Awards() {
                     <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
                     <div className="absolute inset-0 bg-background/80 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100" />
                     <div className="absolute inset-0 flex flex-col justify-end p-6">
-                      <h3 className="text-xl font-semibold leading-snug text-foreground">{a.title}</h3>
+                      <h3 className="text-xl font-semibold leading-snug text-foreground">
+                        {a.title}
+                      </h3>
                       <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-visible:grid-rows-[1fr] group-focus-visible:opacity-100">
                         <div className="overflow-hidden">
-                          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{a.desc}</p>
-                          <p className="pt-5 text-xs uppercase tracking-[0.18em] text-highlight">{a.tags}</p>
+                          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                            {a.desc}
+                          </p>
+                          <p className="pt-5 text-xs uppercase tracking-[0.18em] text-highlight">
+                            {a.tags}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -398,10 +404,7 @@ export function About() {
       </div>
       <div className="about-curtain pointer-events-none" aria-hidden="true">
         {curtainBars.map((b, i) => (
-          <span
-            key={i}
-            style={{ "--c": b.c, "--d": b.d, "--delay": b.delay } as CSSProperties}
-          />
+          <span key={i} style={{ "--c": b.c, "--d": b.d, "--delay": b.delay } as CSSProperties} />
         ))}
       </div>
       <div className="relative mx-auto max-w-6xl px-6 py-28">
@@ -451,7 +454,8 @@ export function Contact() {
             href="mailto:hello@akshay.dev"
             className="contact-cta inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-xs font-semibold tracking-[0.2em] uppercase text-primary-foreground"
           >
-            <Mail className="cta-icon size-4" />CONNECT WITH ME
+            <Mail className="cta-icon size-4" />
+            CONNECT WITH ME
           </a>
         </div>
       </div>
