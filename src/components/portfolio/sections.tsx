@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Mail } from "lucide-react";
 import { ScrollRevealParagraph } from "./scroll-reveal-paragraph";
+import { RisingWordsHeading } from "./rising-words-heading";
 import { WakeGlyph } from "@/components/ui/background-ascii-wake";
 import serviceFlash from "@/assets/service-flash.jpg";
 import serviceCommunity from "@/assets/service-community.jpg";
@@ -434,10 +435,14 @@ export function Contact() {
         style={{ background: "var(--gradient-glow)" }}
       />
       <div className="relative mx-auto max-w-3xl px-6 text-center">
-        <h2 className="text-display text-5xl md:text-7xl">
-          <span className="text-muted-foreground/50">Let&apos;s Work&nbsp;</span>
-          <span>Together</span>
-        </h2>
+        <RisingWordsHeading
+          className="text-display text-5xl md:text-7xl"
+          words={[
+            { text: "Let's", muted: true },
+            { text: "Work", muted: true, nbsp: true },
+            { text: "Together" },
+          ]}
+        />
         <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
           {"\n"}
         </p>
