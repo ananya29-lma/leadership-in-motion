@@ -972,6 +972,28 @@
   opacity: 1;
   transform: translateY(0);
 }
+/* After the last word lands, the whole heading zooms out and settles back into place */
+.words-rise {
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.words-rise.words-revealed {
+  animation: words-zoom-out-back 1.7s cubic-bezier(0.4, 0, 0.6, 1) 0.95s both;
+}
+@keyframes words-zoom-out-back {
+  0% {
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  45% {
+    transform: scale(0.78);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .words-rise .word { opacity: 1; transform: none; transition: none; }
+  .words-rise.words-revealed { animation: none; transform: none; }
 }
