@@ -4,6 +4,8 @@ type RisingWord = {
   text: string;
   /** Paint the word in the muted tone instead of the foreground tone. */
   muted?: boolean;
+  /** Paint the word in the warm gold accent tone. */
+  gold?: boolean;
   /** Keep this word glued to the next one so they never split across lines. */
   nbsp?: boolean;
 };
@@ -53,7 +55,7 @@ export function RisingWordsHeading({
       {words.map((word, index) => (
         <Fragment key={`${index}-${word.text}`}>
           <span
-            className={word.muted ? "word text-muted-foreground/50" : "word"}
+            className={word.gold ? "word text-gold" : word.muted ? "word text-muted-foreground/50" : "word"}
             style={{ "--i": index } as CSSProperties}
           >
             {word.text}

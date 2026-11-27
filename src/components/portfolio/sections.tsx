@@ -438,8 +438,8 @@ export function Contact() {
         <RisingWordsHeading
           className="text-display text-5xl md:text-7xl"
           words={[
-            { text: "Let's", muted: true },
-            { text: "Work", muted: true, nbsp: true },
+            { text: "Let's", gold: true },
+            { text: "Work", gold: true, nbsp: true },
             { text: "Together" },
           ]}
         />
