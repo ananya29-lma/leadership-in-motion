@@ -10,7 +10,7 @@ type RisingWord = {
 
 /**
  * Heading whose words rise and fade in one after another when it scrolls into view.
- * The reveal runs once; reduced-motion visitors get the finished heading straight away.
+ * The reveal replays each time it scrolls back into view, in either direction; reduced-motion visitors get the finished heading straight away.
  */
 export function RisingWordsHeading({
   words,
@@ -34,12 +34,12 @@ export function RisingWordsHeading({
     }
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setRevealed(true);
-          observer.disconnect();
-        }
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.intersectionRatio >= 0.35) setRevealed(true);
+        else if (entry.intersectionRatio === 0) setRevealed(false);
       },
-      { threshold: 0.35 },
+      { threshold: [0, 0.35] },
     );
     observer.observe(el);
     return () => observer.disconnect();
